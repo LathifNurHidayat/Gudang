@@ -51,6 +51,7 @@ class Auth extends CI_Controller
         }
 
         $save_session = [
+            'id_user' => $user->id_user,
             'username' => $user->fullname,
             'is_login' => true,
             'role' => $user->role,

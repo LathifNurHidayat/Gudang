@@ -45,9 +45,14 @@
                                             <?= $usr->is_active ?>
                                         </span>
                                     </td>
+                                    <!-- validasi agar tidak bisa menonaktifkan akun kita sendirii -->
                                     <td colspan="2">
-                                        <a href="<?= site_url('user/edit_user/' . $usr->id_user) ?>"
-                                            class="btn btn-sm btn-warning">Edit</a>
+                                        <?php if ($usr->id_user != $this->session->userdata('id_user')): ?>
+                                            <a href="<?= site_url('user/edit_user/' . $usr->id_user) ?>"
+                                                class="btn btn-sm btn-warning">Edit</a>
+                                        <?php else: ?>
+                                            --
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
