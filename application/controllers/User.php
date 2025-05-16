@@ -89,7 +89,6 @@ class User extends CI_Controller
         $data = [
             'username' => $this->input->post('username', TRUE),
             'fullname' => $this->input->post('fullname', TRUE),
-            'password' => $this->input->post('password', TRUE),
             'is_active' => $this->input->post('is_active', TRUE),
         ];
 
