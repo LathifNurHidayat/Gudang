@@ -12,6 +12,7 @@ class Barang extends CI_Controller
         $this->load->model("model_jenis_barang");
     }
 
+
     public function index()
     {
         $data['barang'] = $this->model_barang->get_all_barang();
@@ -21,6 +22,7 @@ class Barang extends CI_Controller
         $this->load->view("barang/view_barang", $data);
         $this->load->view("templates/footer");
     }
+
 
     public function add_barang()
     {
@@ -32,6 +34,7 @@ class Barang extends CI_Controller
         $this->load->view("templates/footer");
     }
 
+
     public function edit_barang($id_barang)
     {
         $data['barang'] = $this->model_barang->get_barang_by_id($id_barang);
@@ -42,6 +45,7 @@ class Barang extends CI_Controller
         $this->load->view("barang/edit_barang", $data);
         $this->load->view("templates/footer");
     }
+
 
     public function insert_barang()
     {
@@ -74,6 +78,7 @@ class Barang extends CI_Controller
 
         redirect('barang/index');
     }
+
 
     public function update_barang()
     {
@@ -110,6 +115,7 @@ class Barang extends CI_Controller
 
         redirect('barang/index');
     }
+
 
     public function delete_barang($id_barang)
     {

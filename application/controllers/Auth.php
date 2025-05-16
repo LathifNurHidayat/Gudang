@@ -9,6 +9,7 @@ class Auth extends CI_Controller
         $this->load->model('model_user');
     }
 
+
     public function form_login()
     {
         if ($this->session->userdata('is_login') == true) {
@@ -17,10 +18,12 @@ class Auth extends CI_Controller
         $this->load->view('auth/login');
     }
 
+
     public function form_register()
     {
         $this->load->view('auth/register');
     }
+
 
     public function cek_login()
     {
@@ -78,7 +81,7 @@ class Auth extends CI_Controller
             redirect('auth/form_register');
         }
 
-        $password_hash  = password_hash($password, PASSWORD_DEFAULT);
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
         $data = [
             'username' => $username,
@@ -92,6 +95,7 @@ class Auth extends CI_Controller
         $this->session->set_flashdata('msg', alert_success('Registrasi berhasil, silakan login.'));
         redirect('auth/form_login');
     }
+
 
     public function logout()
     {

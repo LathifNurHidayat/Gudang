@@ -56,7 +56,7 @@
                                             class="btn btn-sm btn-warning">Edit</a>
                                         <a href="<?= site_url('jenis_barang/delete_jenis_barang/' . $jenis->id_jenis_barang) ?>"
                                             class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Anda yakin ingin menghapus data?');">Hapus</a>
+                                            onclick="return confirm('Jika anda menghapus data ini, maka data barang yang terhubung dengan data ini juga ikut terhapus.\n Anda yakin ?');">Hapus</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

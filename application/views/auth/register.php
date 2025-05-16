@@ -74,7 +74,5 @@
     <script>
         document.body.style.display = "block"
     </script>
-
 </body>
-
 </html>
