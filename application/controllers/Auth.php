@@ -54,7 +54,7 @@ class Auth extends CI_Controller
             'id_user' => $user->id_user,
             'username' => $user->fullname,
             'is_login' => true,
-            'role' => $user->role,
+            'id_role' => $user->id_role,
         ];
 
         $this->session->set_userdata($save_session);
@@ -89,7 +89,7 @@ class Auth extends CI_Controller
             'password' => $password_hash,
             'fullname' => $fullname,
             'is_active' => 'nonaktif',
-            'role' => 'user',
+            'id_role' => '2',
         ];
         $this->model_user->insert_user($data);
 

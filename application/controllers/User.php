@@ -6,9 +6,11 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        check_login();
+        middleware_login();
+        middleware_access();
 
         $this->load->model("model_user");
+        $this->load->model("model_role");
     }
 
     public function index()
@@ -65,7 +67,7 @@ class User extends CI_Controller
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal disimpan'));
 
-        redirect('obat/index');
+        redirect('user/index');
     }
 
     public function update_user()
@@ -102,4 +104,87 @@ class User extends CI_Controller
     }
 
 
+    //ROLE
+    public function role()
+    {
+        $data['role'] = $this->model_role->get_all_role();
+
+        $this->load->view("templates/header");
+        $this->load->view("templates/sidebar");
+        $this->load->view("role/view_role", $data);
+        $this->load->view("templates/footer");
+    }
+
+    public function add_role()
+    {
+        $this->load->view("templates/header");
+        $this->load->view("templates/sidebar");
+        $this->load->view("role/add_role");
+        $this->load->view("templates/footer");
+    }
+
+    public function edit_role($id_role)
+    {
+        $data['role'] = $this->model_role->get_role_by_id($id_role);
+
+        $this->load->view("templates/header");
+        $this->load->view("templates/sidebar");
+        $this->load->view("role/edit_role", $data);
+        $this->load->view("templates/footer");
+    }
+
+    public function insert_role()
+    {
+        $this->form_validation->set_rules('role', 'role', 'required');
+
+        if ($this->form_validation->run() == FALSE) {
+
+            $this->load->view('templates/header');
+            $this->load->view('templates/sidebar');
+            $this->load->view('role/add_role');
+            $this->load->view('templates/footer');
+            return;
+        }
+
+        $data = [
+            'role' => $this->input->post('role', TRUE),
+        ];
+
+        $query_cek = $this->model_role->insert_role($data);
+        if ($query_cek)
+            $this->session->set_flashdata('msg', alert_success('Data berhasil disimpan'));
+        else
+            $this->session->set_flashdata('msg', alert_error('Data gagal disimpan'));
+
+        redirect('role');
+    }
+
+
+    public function update_role()
+    {
+        $this->form_validation->set_rules('role', 'role', 'required');
+
+        if ($this->form_validation->run() == FALSE) {
+
+            $this->load->view('templates/header');
+            $this->load->view('templates/sidebar');
+            $this->load->view('role/edit_role');
+            $this->load->view('templates/footer');
+            return;
+        }
+
+        $id_role = $this->input->post('id_role', TRUE);
+
+        $data = [
+            'role' => $this->input->post('role', TRUE),
+        ];
+
+        $query_cek = $this->model_role->update_role($id_role, $data);
+        if ($query_cek)
+            $this->session->set_flashdata('msg', alert_success('Data berhasil diperbarui'));
+        else
+            $this->session->set_flashdata('msg', alert_error('Data gagal diperbarui'));
+
+        redirect('role');
+    }
 }

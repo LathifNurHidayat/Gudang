@@ -6,8 +6,8 @@ class Dashboard extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        check_login();
-        
+        middleware_login();
+
         $this->load->model("model_barang");
         $this->load->model("model_user");
         $this->load->model("model_jenis_barang");
