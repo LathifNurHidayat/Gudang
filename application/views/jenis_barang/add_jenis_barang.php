@@ -13,7 +13,7 @@
 
             <?= $this->session->flashdata('msg'); ?>
 
-            <?= form_open('jenis_barang/insert_jenis_barang', ['class' => 'm-3']); ?>
+            <?= form_open('barang/insert_jenis_barang', ['class' => 'm-3']); ?>
 
             <div class="mb-3">
                 <label class="form-label">Nama jenis barang</label>
@@ -22,7 +22,7 @@
             </div>
 
             <div class="d-flex justify-content-between">
-                <a href="<?= base_url('jenis_barang/index') ?>" class="btn btn-warning">Kembali</a>
+                <a href="<?= base_url('barang/jenis_barang') ?>" class="btn btn-warning">Kembali</a>
                 <button type="submit" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"

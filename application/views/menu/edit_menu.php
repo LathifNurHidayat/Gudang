@@ -3,7 +3,7 @@
         Halaman
     </div>
     <h2 class="page-title">
-        Edit jenis barang
+        Edit menu
     </h2>
 </div>
 
@@ -13,18 +13,18 @@
 
             <?= $this->session->flashdata('msg'); ?>
 
-            <?= form_open('barang/update_jenis_barang', ['class' => 'm-3']); ?>
+            <?= form_open('menu/update_menu', ['class' => 'm-3']); ?>
 
-            <input type="hidden" name="id_jenis_barang" value="<?= $jenis_barang->id_jenis_barang?>">
+            <input type="hidden" name="id_menu" value="<?= $menu->id_menu?>">
 
             <div class="mb-3">
-                <label class="form-label">Nama jenis barang</label>
-                <input type="text" class="form-control" name="nama_jenis_barang" value="<?= set_value('nama_jenis_barang', $jenis_barang->nama_jenis_barang) ?>">
-                <small class="text-danger"><i><?= form_error('nama_jenis_barang') ?></i></small>
+                <label class="form-label">Nama menu</label>
+                <input type="text" class="form-control" name="menu" value="<?= set_value('menu', $menu->menu) ?>">
+                <small class="text-danger"><i><?= form_error('menu') ?></i></small>
             </div>
 
             <div class="d-flex justify-content-between">
-                <a href="<?= base_url('barang/jenis_barang') ?>" class="btn btn-warning">Kembali</a>
+                <a href="<?= base_url('menu/index') ?>" class="btn btn-warning">Kembali</a>
                 <button type="submit" class="btn btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"

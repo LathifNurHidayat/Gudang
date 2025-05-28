@@ -23,6 +23,13 @@
                     Tambah Data
                 </a>
             </div>
+
+            <div class="card-title ml-3">
+                <a href="" class="btn btn-warning" data-toggle="modal" data-target="#pilih_tanggal">
+                    <i class="fa fa-download"></i>
+                    Export
+                </a>
+            </div>
         </div>
 
         <div class="container mt-2">
@@ -73,3 +80,43 @@
         </div>
     </div>
 </div>
+
+<div class="modal modal-blur fade" id="pilih_tanggal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pilih Tanggal</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <?= form_open('barang/export_to_excel', ['id' => 'form_tanggal']) ?>
+                <div class="row mb-3 col-12">
+                    <div class="form-label col-5">Dari tanggal</div>
+                    <input type="date" class="form-control mb-3" name="tanggal_1" value="<?= set_value('tanggal_1') ?>">
+                    <small class="text-danger"><i><?= form_error('tanggal_1') ?></i></small>
+
+                    <div class="form-label col-5">Sampai tanggal</div>
+                    <input type="date" class="form-control" name="tanggal_2" value="<?= set_value('tanggal_2') ?>">
+                    <small class="text-danger"><i><?= form_error('tanggal_2') ?></i></small>
+                </div>
+                <?= form_close() ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#form_tanggal').submit(function(e) {
+           e.preventDefault(); //biar gak reload
+           
+           $('.text-danger').html('');
+
+           $ajax({
+
+           });
+        });
+    });
+</script>

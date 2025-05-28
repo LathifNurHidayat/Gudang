@@ -16,7 +16,12 @@
         <path d="M16 11l2 2l4 -4" />
     </svg>
     Selamat datang <b><?= $this->session->userdata('username'); ?></b> sebagai
-    <b><?= $this->session->userdata('role') == 'user' ? 'Petugas' : 'Super Admin' ?></b>
+    <b><?php
+    
+    $id_role = $this->session->userdata('id_role');
+    $role = $this->db->get_where('tb_user_role', ['id_role' => $id_role])->row_array();
+    echo $role['role'];
+    ?></b>
 </div>
 
 <div class="row">

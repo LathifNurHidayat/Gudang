@@ -4,7 +4,7 @@
         Halaman
     </div>
     <h2 class="page-title">
-        Data Jenis Barang
+        Data role
     </h2>
 </div>
 
@@ -12,7 +12,7 @@
     <div class="card">
         <div class="card-header">
             <div class="card-title">
-                <a href="<?= site_url('barang/add_jenis_barang') ?>" class="btn btn-primary ">
+                <a href="<?= site_url('user/add_role') ?>" class="btn btn-primary ">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -35,28 +35,24 @@
                     <thead>
                         <tr>
                             <th>NO</th>
-                            <th>NAMA JENIS BARANG</th>
+                            <th>ROLE</th>
                             <th>AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
 
-                        <?php if (empty($jenis_barang)): ?>
+                        <?php if (empty($role)): ?>
                             <tr>
-                                <td colspan="3" class="text-center">Tidak ada data jenis barang</td>
+                                <td colspan="3" class="text-center">Tidak ada data role</td>
                             </tr>
                         <?php else: ?>
                             <?php $no = 1;
-                            foreach ($jenis_barang as $jenis): ?>
+                            foreach ($role as $r): ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
-                                    <td><?= $jenis->nama_jenis_barang ?></td>
+                                    <td><?= $r['role'] ?></td>
                                     <td colspan="2">
-                                        <a href="<?= site_url('barang/edit_jenis_barang/' . $jenis->id_jenis_barang) ?>"
-                                            class="btn btn-sm btn-warning">Edit</a>
-                                        <a href="<?= site_url('barang/delete_jenis_barang/' . $jenis->id_jenis_barang) ?>"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Jika anda menghapus data ini, maka data barang yang terhubung dengan data ini juga ikut terhapus.\n Anda yakin ?');">Hapus</a>
+                                        <a href= "<?= site_url('user/edit_role/') . $r['id_role'];?>" class="btn btn-sm btn-warning">Edit</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
