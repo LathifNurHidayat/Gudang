@@ -24,8 +24,7 @@ class Menu extends CI_Controller
         $this->load->view("templates/footer");
     }
 
-    public function get_menu()
-    {
+    public function get_menu(){
         $menu = $this->model_menu->get_all_menu();
         echo json_encode($menu);
     }
@@ -347,14 +346,8 @@ class Menu extends CI_Controller
 
     public function ajax_user_access()
     {
-
         $id_role = $this->input->post('role_id');
         $id_menu = $this->input->post('menu_id');
-
-        if (!$id_role || !$id_menu) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid data']);
-            return;
-        }
 
         $data = [
             'id_role' => $id_role,
@@ -363,14 +356,19 @@ class Menu extends CI_Controller
 
         $result = $this->db->get_where('tb_user_access_menu', $data);
 
-        if ($result->num_rows() < 1) {
+        if ($result->num_rows() < 1)
             $this->db->insert('tb_user_access_menu', $data);
-        } else {
+        else {
             $this->db->where($data);
             $this->db->delete('tb_user_access_menu');
         }
 
-        echo json_encode(['status' => 'success', 'message' => 'Akses berhasil diperbarui']);
+        $this->session->set_flashdata('msg', alert_success('Berhasil memperbarui'));
+
+        echo json_encode([
+            'status' => 'success',
+            'redirect' => site_url('menu/access_menu/' . $id_role)
+        ]);
     }
 
 }

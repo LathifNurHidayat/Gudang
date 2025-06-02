@@ -56,11 +56,15 @@ class Barang extends CI_Controller
         $this->form_validation->set_rules('stok', 'Stok', 'required|numeric');
 
         if ($this->form_validation->run() == FALSE) {
-
-            $this->load->view('templates/header');
-            $this->load->view('templates/sidebar');
-            $this->load->view('barang/add_barang');
-            $this->load->view('templates/footer');
+            echo json_encode([
+                'status' => 'error',
+                'error_msg' => [
+                    'id_jenis_barang' => form_error('id_jenis_barang'),
+                    'nama_barang' => form_error('nama_barang'),
+                    'harga' => form_error('harga'),
+                    'stok' => form_error('stok')
+                ]
+            ]);
             return;
         }
 
@@ -77,7 +81,7 @@ class Barang extends CI_Controller
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal disimpan'));
 
-        redirect('barang/index');
+        echo json_encode(['status' => 'success', 'redirect' => site_url('barang/index')]);
     }
 
 
@@ -89,18 +93,18 @@ class Barang extends CI_Controller
         $this->form_validation->set_rules('stok', 'Stok', 'required|numeric');
 
         if ($this->form_validation->run() == FALSE) {
-
-            $data['jenis_barang'] = $this->model_jenis_barang->get_all_jenis_barang();
-
-            $this->load->view('templates/header');
-            $this->load->view('templates/sidebar');
-            $this->load->view('barang/edit_barang', $data);
-            $this->load->view('templates/footer');
+            echo json_encode([
+                'status' => 'error',
+                'error_msg' => [
+                    'id_jenis_barang' => form_error('id_jenis_barang'),
+                    'nama_barang' => form_error('nama_barang'),
+                    'harga' => form_error('harga'),
+                    'stok' => form_error('stok')
+                ]
+            ]);
             return;
         }
-
         $id_barang = $this->input->post('id_barang', TRUE);
-
         $data = [
             'id_jenis_barang' => $this->input->post('id_jenis_barang', TRUE),
             'nama_barang' => $this->input->post('nama_barang', TRUE),
@@ -114,7 +118,10 @@ class Barang extends CI_Controller
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal diperbarui'));
 
-        redirect('barang/index');
+        echo json_encode([
+            'status' => 'success',
+            'redirect' => site_url('barang/index')
+        ]);
     }
 
 
@@ -161,6 +168,12 @@ class Barang extends CI_Controller
         $this->load->view("templates/footer");
     }
 
+    public function get_jenis_barang()
+    {
+        $barang = $this->model_jenis_barang->get_all_jenis_barang();
+        echo json_encode($barang);
+    }
+
     public function add_jenis_barang()
     {
 
@@ -185,11 +198,12 @@ class Barang extends CI_Controller
         $this->form_validation->set_rules('nama_jenis_barang', 'Jenis Barang', 'required');
 
         if ($this->form_validation->run() == FALSE) {
-
-            $this->load->view('templates/header');
-            $this->load->view('templates/sidebar');
-            $this->load->view('jenis_barang/add_jenis_barang');
-            $this->load->view('templates/footer');
+            echo json_encode([
+                'status' => 'error',
+                'error_msg' => [
+                    'nama_jenis_barang' => form_error('nama_jenis_barang'),
+                ]
+            ]);
             return;
         }
 
@@ -203,7 +217,10 @@ class Barang extends CI_Controller
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal disimpan'));
 
-        redirect('barang/jenis_barang');
+        echo json_encode([
+            'status' => 'success',
+            'redirect' => site_url('barang/jenis_barang')
+        ]);
     }
 
 
@@ -212,11 +229,12 @@ class Barang extends CI_Controller
         $this->form_validation->set_rules('nama_jenis_barang', 'Jenis Barang', 'required');
 
         if ($this->form_validation->run() == FALSE) {
-
-            $this->load->view('templates/header');
-            $this->load->view('templates/sidebar');
-            $this->load->view('jenis_barang/add_jenis_barang');
-            $this->load->view('templates/footer');
+            echo json_encode([
+                'status' => 'error',
+                'error_msg' => [
+                    'error_jenis' => form_error('nama_jenis_barang')
+                ]
+            ]);
             return;
         }
 
@@ -232,7 +250,10 @@ class Barang extends CI_Controller
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal diperbarui'));
 
-        redirect('barang/jenis_barang');
+        echo json_encode([
+            'status' => 'success',
+            'redirect' => site_url('barang/jenis_barang')
+        ]);
     }
 
     public function delete_jenis_barang($id_jenis_barang)

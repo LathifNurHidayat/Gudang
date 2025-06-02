@@ -42,16 +42,15 @@
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= $am['menu'] ?></td>
-                                    <td><?= $am['id_role'] ?></td>
-                                    <td><?= $am['id_menu'] ?></td>
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked"
                                             <?php if ($am['id_role'] == $id_role):?>
                                                 checked
                                             <?php endif ;?>
                                             data-role="<?= $am['id_role'];?>"
-                                            data-menu="<?= $am['id_menu'];?>">
+                                            data-menu="<?= $am['id_menu'];?>"
+                                            >
                                         </div>
                                     </td>
                                 </tr>
@@ -65,9 +64,28 @@
 </div>
 
 <script>
-  $(document).ready(function () {
-    $('.form-check-input').on('click', function () {
-        
+    $(document).ready(function(){
+
+        $('.form-check-input').on('click', function () {
+            const menuId = $(this).data('menu');
+        const roleId = $(this).data('role');
+
+            $.ajax({
+                url: "<?= site_url('menu/ajax_user_access') ?>",
+                type: 'post',
+                data: {
+                    menu_id: menuId, 
+                    role_id: roleId,
+                    '<?= $this->security->get_csrf_token_name(); ?>': '<?= $this->security->get_csrf_hash(); ?>'
+
+                },
+                success: function () {
+                    document.location.href = "<?= site_url('menu/access_menu/') ?>" + roleId;
+                }
+            });
+        });
     });
-});
+
+
+    
 </script>

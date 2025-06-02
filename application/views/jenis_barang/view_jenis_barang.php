@@ -41,29 +41,52 @@
                     </thead>
                     <tbody>
 
-                        <?php if (empty($jenis_barang)): ?>
-                            <tr>
-                                <td colspan="3" class="text-center">Tidak ada data jenis barang</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php $no = 1;
-                            foreach ($jenis_barang as $jenis): ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $jenis->nama_jenis_barang ?></td>
-                                    <td colspan="2">
-                                        <a href="<?= site_url('barang/edit_jenis_barang/' . $jenis->id_jenis_barang) ?>"
-                                            class="btn btn-sm btn-warning">Edit</a>
-                                        <a href="<?= site_url('barang/delete_jenis_barang/' . $jenis->id_jenis_barang) ?>"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Jika anda menghapus data ini, maka data barang yang terhubung dengan data ini juga ikut terhapus.\n Anda yakin ?');">Hapus</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+
+
+<script>
+    $(document).ready(function () {
+        LoadData();
+
+        function LoadData() {
+            $.ajax({
+                url: '<?= site_url('barang/get_jenis_barang') ?>',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    let baris = '';
+                    if (data.length == 0) {
+                        baris += `
+                        <tr>
+                            <td colspan="3">Tidak ada data jenis barang</td>
+                        </tr>`;
+                    } else {
+                        data.forEach(function (item, index) {
+                            baris += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.nama_jenis_barang}</td>
+                            <td colspan="2">
+                                <a href="<?= site_url('barang/edit_jenis_barang/') ?>${item.id_jenis_barang}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= site_url('barang/delete_jenis_barang/') ?>${item.id_jenis_barang ?? ''}" 
+                                class="btn btn-danger btn-sm">Hapus</a>
+                            </td>
+                        </tr>`;
+                        })
+                    }
+                    $('#table_jenis_barang tbody').html(baris);
+                },
+                error: function (error) {
+                    console.error('Error : ', error);
+                }
+            });
+        }
+    });
+</script>
