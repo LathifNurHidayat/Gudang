@@ -31,7 +31,7 @@
 
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_jenis_barang">
+                <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_submenu">
                     <thead>
                         <tr>
                             <th>NO</th>
@@ -45,30 +45,56 @@
                     </thead>
                     <tbody>
 
-                        <?php if (empty($submenu)): ?>
-                            <tr>
-                                <td colspan="3" class="text-center">Tidak ada data submenu</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php $no = 1;
-                            foreach ($submenu as $sub): ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $sub['menu'] ?></td>
-                                    <td><?= $sub['title'] ?></td>
-                                    <td><?= $sub['url'] ?></td>
-                                    <td><?= $sub['icon'] ?></td>
-                                    <td><?= $sub['is_active'] == 1 ? 'Active' : 'Non Active' ?></td>
-                                    <td colspan="2">
-                                        <a href="<?= site_url('menu/edit_submenu/') . $sub['id_sub_menu']; ?>"
-                                            class="btn btn-sm btn-warning">Edit</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        tampil_data();
+
+        function tampil_data() {
+            $.ajax({
+                url: '<?= site_url('menu/get_submenu') ?>',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data){
+                    let baris = '';
+                    if (data.length == 0) {
+                        baris += `
+                        <tr>
+                            <td colspan="3" class="text-center">Tidak ada data submenu</td>
+                        </tr> `;
+                    } else {
+                        data.forEach(function (item, index) {
+                            baris += `
+                            <tr>
+                                <td>${index + 1}</td>    
+                                <td>${item.menu}</td>    
+                                <td>${item.title}</td>    
+                                <td>${item.url}</td>    
+                                <td>${item.icon}</td>    
+                                <td>${item.is_active == 1 ? 'Active' : 'Non Active'}</td>    
+                                <td colspan="2">
+                                    <a href="<?= site_url('menu/edit_submenu/') ?>${item.id_sub_menu}" class="btn btn-sm btn-warning" >Edit</a>
+                                </td>    
+                            </td>`;
+                        });
+                    };
+                    $('#table_submenu tbody').html(baris);
+                },
+                error: function (xhr, status, error){
+                    console.error('Error fetching submenu : ', error);
+                    $('#table_submenu tbody').html(
+                        `<tr>
+                            <td colspan="7" class="text-center">Gagal memuat data submenu</td>
+                        </tr>`
+                    );
+                }
+            })
+        }
+    });
+</script>

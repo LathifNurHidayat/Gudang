@@ -5,7 +5,7 @@ class Model_role extends CI_Model
 {
     public function get_all_role()
     {
-        return $this->db->get('tb_user_role')->result_array();
+        return $this->db->get('tb_user_role')->result();
     }
 
     public function get_role_by_id($id_role)

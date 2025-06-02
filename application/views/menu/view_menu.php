@@ -31,7 +31,7 @@
 
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_jenis_barang">
+                <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_menu">
                     <thead>
                         <tr>
                             <th>NO</th>
@@ -41,25 +41,52 @@
                     </thead>
                     <tbody>
 
-                        <?php if (empty($menu)): ?>
-                            <tr>
-                                <td colspan="3" class="text-center">Tidak ada data menu</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php $no = 1;
-                            foreach ($menu as $m): ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $m['menu'] ?></td>
-                                    <td colspan="2">
-                                        <a href= "<?= site_url('menu/edit_menu/') . $m['id_menu'];?>" class="btn btn-sm btn-warning">Edit</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        load_data();
+
+        function load_data() {
+            $.ajax({
+                url: '<?= site_url('menu/get_menu') ?>',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('Data menu : ', data);
+                    let baris = '';
+                    if (data.length == 0) {
+                        baris += `
+                    <tr>
+                        <td colspan="3" class="text-center">Tidak ada data menu</td>
+                    </tr>`;
+                    } else {
+                        data.forEach(function (item, index) {
+                            baris += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.menu}</td>
+                            <td><a href="<?= site_url('menu/edit_menu/') ?>${item.id_menu}" class="btn btn-sm btn-warning">Edit</a></td>
+                        </tr>
+                        `;
+                        });
+                    }
+                    $('#table_menu tbody').html(baris);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching menu : ', error);
+                    $('#table_menu tbody').html(
+                        `<tr>
+                        <td colspan="3">Gagal menggambil data menu</td>
+                    </tr>`
+                    )
+                }
+        });
+        }
+    })
+</script>

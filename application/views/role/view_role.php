@@ -12,7 +12,7 @@
     <div class="card">
         <div class="card-header">
             <div class="card-title">
-                <a href="<?= site_url('user/add_role') ?>" class="btn btn-primary ">
+                <a href="<?= site_url('menu/add_role') ?>" class="btn btn-primary ">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -41,25 +41,48 @@
                     </thead>
                     <tbody>
 
-                        <?php if (empty($role)): ?>
-                            <tr>
-                                <td colspan="3" class="text-center">Tidak ada data role</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php $no = 1;
-                            foreach ($role as $r): ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $r['role'] ?></td>
-                                    <td colspan="2">
-                                        <a href= "<?= site_url('user/edit_role/') . $r['id_role'];?>" class="btn btn-sm btn-warning">Edit</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        tampil_data();
+
+        function tampil_data(){
+            $.ajax({
+                url: '<?= site_url('menu/get_role') ?>',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data){
+                    let baris = '';
+                    if(data.length === 0){
+                        baris += `
+                        <tr>
+                            <td colspan="3">Tidak ada data role</td>
+                        </tr>`;
+                    } else {
+                        data.forEach(function(item, i){
+                        baris += `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${item.role}</td>
+                            <td>
+                                <a href="<?= site_url('menu/access_menu/') ?>${item.id_role}" class="btn btn-sm btn-primary">Hak Akses</a>
+                                <a href="<?= site_url('menu/edit_role/') ?>${item.id_role}" class="btn btn-sm btn-warning">Edit</a>
+                            </td>
+                        </tr>`;
+                        });
+                    }
+                    $('#table_jenis_barang tbody').html(baris);
+                },
+                error: function(ex) {
+                    alert('Gagal mengambil data role');
+                }
+            });
+        };
+    });
+</script>
