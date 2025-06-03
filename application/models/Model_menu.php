@@ -3,8 +3,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Model_menu extends CI_Model
 {
-    public function get_all_menu()
+    public function get_all_menu($keyword)
     {
+        if(!empty($keyword)){
+            $this->db->like('menu', $keyword);
+        }
         return $this->db->get('tb_user_menu')->result_array();
     }
 
@@ -16,21 +19,15 @@ class Model_menu extends CI_Model
     public function insert_menu($data)
     {
         $this->db->insert('tb_user_menu', $data);
-
-        if ($this->db->affected_rows() > 0)
-            return true;
-        else
-            return false;
+        if ($this->db->affected_rows() > 0) return true;
+        else return false;
     }
 
     public function update_menu($id_menu, $data)
     {
         $this->db->where('id_menu', $id_menu);
         $this->db->update('tb_user_menu', $data);
-
-        if ($this->db->affected_rows() > 0)
-            return true;
-        else
-            return false;
+        if ($this->db->affected_rows() > 0) return true;
+        else return false;
     }
 }

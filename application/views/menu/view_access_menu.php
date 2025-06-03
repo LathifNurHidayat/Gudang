@@ -20,6 +20,7 @@
             <?= $this->session->flashdata('msg') ?>
         </div>
 
+
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_jenis_barang">
@@ -32,29 +33,30 @@
                     </thead>
                     <tbody>
 
-                        <?php if (empty($access_menu)): ?>
+                        <?php if (empty($menu)): ?>
                             <tr>
                                 <td colspan="3" class="text-center">Tidak ada data menu</td>
                             </tr>
                         <?php else: ?>
                             <?php $no = 1;
-                            foreach ($access_menu as $am): ?>
+                            foreach ($menu as $m): 
+                            if($m['id_menu'] != 2): ?>
+                            
                                 <tr>
                                     <td><?= $no++ ?></td>
-                                    <td><?= $am['menu'] ?></td>
+                                    <td><?= $m['menu'] ?></td>
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked"
-                                            <?php if ($am['id_role'] == $id_role):?>
-                                                checked
-                                            <?php endif ;?>
-                                            data-role="<?= $am['id_role'];?>"
-                                            data-menu="<?= $am['id_menu'];?>"
-                                            >
+                                            <input class="form-check-input" type="checkbox" value=""
+                                            <?= check_access($id_role, $m['id_menu'])?> 
+                                            data-role="<?= $id_role?>"
+                                            data-menu="<?= $m['id_menu'];?>">
                                         </div>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php 
+                        endif;
+                        endforeach; ?>
                         <?php endif; ?>
                     </tbody>
                 </table>
@@ -65,27 +67,17 @@
 
 <script>
     $(document).ready(function(){
-
-        $('.form-check-input').on('click', function () {
-            const menuId = $(this).data('menu');
-        const roleId = $(this).data('role');
-
+        $('.form-check-input').on('click', function(){
+            let id_role = $(this).data('role')
+            let id_menu = $(this).data('menu')
             $.ajax({
-                url: "<?= site_url('menu/ajax_user_access') ?>",
-                type: 'post',
-                data: {
-                    menu_id: menuId, 
-                    role_id: roleId,
-                    '<?= $this->security->get_csrf_token_name(); ?>': '<?= $this->security->get_csrf_hash(); ?>'
-
-                },
-                success: function () {
-                    document.location.href = "<?= site_url('menu/access_menu/') ?>" + roleId;
+                url: '<?= site_url('menu/ajax_user_access')?>',
+                method: 'POST',
+                data: {role_id : id_role, menu_id : id_menu, <?= $this->security->get_csrf_token_name()?> : "<?= $this->security->get_csrf_hash()?>"},
+                success: function(){
+                    window.location.href = '<?= site_url('menu/access_menu/')?>' + id_role
                 }
-            });
-        });
+            })
+        })
     });
-
-
-    
 </script>

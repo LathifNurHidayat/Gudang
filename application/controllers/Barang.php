@@ -1,5 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class Barang extends CI_Controller
 {
@@ -16,30 +19,33 @@ class Barang extends CI_Controller
 
     public function index()
     {
-        $data['barang'] = $this->model_barang->get_all_barang();
-
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
-        $this->load->view("barang/view_barang", $data);
+        $this->load->view("barang/view_barang");
         $this->load->view("templates/footer");
     }
 
 
+    public function get_barang()
+    {
+        $keyword = $this->input->post('keyword');
+        $barang = $this->model_barang->get_all_barang($keyword);
+        echo json_encode($barang);
+    }
+
     public function add_barang()
     {
-        $data['jenis_barang'] = $this->model_jenis_barang->get_all_jenis_barang();
-
+        $data['jenis_barang'] = $this->model_jenis_barang->get_all_jenis_barang('');
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
         $this->load->view("barang/add_barang", $data);
         $this->load->view("templates/footer");
     }
 
-
     public function edit_barang($id_barang)
     {
         $data['barang'] = $this->model_barang->get_barang_by_id($id_barang);
-        $data['jenis_barang'] = $this->model_jenis_barang->get_all_jenis_barang();
+        $data['jenis_barang'] = $this->model_jenis_barang->get_all_jenis_barang('');
 
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
@@ -117,7 +123,6 @@ class Barang extends CI_Controller
             $this->session->set_flashdata('msg', alert_success('Data berhasil diperbarui'));
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal diperbarui'));
-
         echo json_encode([
             'status' => 'success',
             'redirect' => site_url('barang/index')
@@ -128,39 +133,84 @@ class Barang extends CI_Controller
     public function delete_barang($id_barang)
     {
         $cek = $this->model_barang->delete_barang($id_barang);
-
         if ($cek)
             $this->session->set_flashdata('msg', alert_success('Data berhasil dihapus'));
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal dihapus'));
-
         redirect('barang/index');
     }
 
 
-    public function export_to_excel()
-    {
-        $this->form_validation->set_rules('tanggal_1', 'Tanggal', 'required');
-        $this->form_validation->set_rules('tanggal_2', 'Tanggal', 'required');
+public function export_to_excel()
+{
+    $barang = $this->db->get('tb_barang')->result_array();
 
-        if ($this->form_validation->run() == FALSE) {
-            $data['barang'] = $this->model_barang->get_all_barang();
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
 
-            $this->load->view("templates/header");
-            $this->load->view("templates/sidebar");
-            $this->load->view("barang/view_barang", $data);
-            $this->load->view("templates/footer");
-        }
+    $sheet->setCellValue('A4', 'ID Barang');
+    $sheet->setCellValue('B4', 'Nama Barang');
+    $sheet->setCellValue('C4', 'Harga Barang');
+    $sheet->setCellValue('D4', 'Stok');
+
+    $style_header = [
+        'font' => [
+            'bold' => true,
+            'color' => ['rgb' => 'FFFFFF'],
+        ],
+        'fill' => [
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'startColor' => ['rgb' => '4CAF50'],
+        ],
+        'alignment' => [
+            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        ],
+        'borders' => [
+            'allBorders' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+            ],
+        ],
+    ];
+    $sheet->getStyle('A4:D4')->applyFromArray($style_header);
+
+    $row = 5;
+    foreach ($barang as $b) {
+        $sheet->setCellValue('A' . $row, $b['id_barang']);
+        $sheet->setCellValue('B' . $row, $b['nama_barang']);
+        $sheet->setCellValue('C' . $row, $b['harga']);
+        $sheet->setCellValue('D' . $row, $b['stok']);
+        $row++;
     }
 
+    // Styling
+    $last_row = $row - 1;
+    $sheet->getStyle('A5:D' . $last_row)->applyFromArray([
+        'borders' => [
+            'allBorders' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+            ]
+        ],
+    ]);
 
+    // Lebar auto
+    foreach (range('A', 'D') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+
+    // Ekspor ke browser
+    $writer = new Xlsx($spreadsheet);
+    $filename = 'Data_Barang_' . date('Ymd_His');
+
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header("Content-Disposition: attachment; filename=\"$filename.xlsx\"");
+    $writer->save('php://output');
+}
 
 
     //JENIS BARANG 
-
     public function jenis_barang()
     {
-        $data['jenis_barang'] = $this->model_jenis_barang->get_all_jenis_barang();
+        $data['jenis_barang'] = $this->model_jenis_barang->get_all_jenis_barang('');
 
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
@@ -168,15 +218,17 @@ class Barang extends CI_Controller
         $this->load->view("templates/footer");
     }
 
+
     public function get_jenis_barang()
     {
-        $barang = $this->model_jenis_barang->get_all_jenis_barang();
+        $keyword = $this->input->post('keyword');
+        $barang = $this->model_jenis_barang->get_all_jenis_barang($keyword);
         echo json_encode($barang);
     }
 
+
     public function add_jenis_barang()
     {
-
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
         $this->load->view("jenis_barang/add_jenis_barang");
@@ -193,10 +245,10 @@ class Barang extends CI_Controller
         $this->load->view("templates/footer");
     }
 
+
     public function insert_jenis_barang()
     {
         $this->form_validation->set_rules('nama_jenis_barang', 'Jenis Barang', 'required');
-
         if ($this->form_validation->run() == FALSE) {
             echo json_encode([
                 'status' => 'error',
@@ -237,27 +289,25 @@ class Barang extends CI_Controller
             ]);
             return;
         }
-
         $id_jenis_barang = $this->input->post('id_jenis_barang', TRUE);
-
         $data = [
             'nama_jenis_barang' => $this->input->post('nama_jenis_barang', TRUE),
         ];
-
         $query_cek = $this->model_jenis_barang->update_jenis_barang($id_jenis_barang, $data);
         if ($query_cek)
             $this->session->set_flashdata('msg', alert_success('Data berhasil diperbarui'));
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal diperbarui'));
-
         echo json_encode([
             'status' => 'success',
             'redirect' => site_url('barang/jenis_barang')
         ]);
     }
 
-    public function delete_jenis_barang($id_jenis_barang)
+
+    public function delete_jenis_barang()
     {
+        $id_jenis_barang = $this->input->post('id_jenis_barang');
         $cek = $this->model_jenis_barang->delete_jenis_barang($id_jenis_barang);
 
         if ($cek)
@@ -265,6 +315,8 @@ class Barang extends CI_Controller
         else
             $this->session->set_flashdata('msg', alert_error('Data gagal dihapus'));
 
-        redirect('barang/jenis_barang');
+        echo json_encode([
+            'status' => 'success',
+        ]);
     }
 }

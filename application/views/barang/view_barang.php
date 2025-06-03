@@ -25,18 +25,22 @@
             </div>
 
             <div class="card-title ml-3">
-                <a href="" class="btn btn-warning" data-toggle="modal" data-target="#pilih_tanggal">
+                <a href="<?= site_url('barang/export_to_excel')?>" class="btn btn-warning">
                     <i class="fa fa-download"></i>
                     Export
                 </a>
             </div>
         </div>
 
-        <div class="container mt-2">
+        <div class="container mt-2 w-100">
             <?= $this->session->flashdata('msg') ?>
         </div>
 
         <div class="card-body">
+            <div class="form-group col-12 col-md-6 col-lg-4 mb-3">
+                <label class="form-label">Search</label>
+                <input type="text" class="form-control" id="keyword" placeholder="Masukan keyword">
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_barang">
                     <thead>
@@ -51,55 +55,8 @@
                     </thead>
                     <tbody>
 
-                        <?php if (empty($barang)): ?>
-                            <tr>
-                                <td colspan="6" class="text-center">Tidak ada data barang</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php $no = 1;
-                            foreach ($barang as $brg): ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $brg->nama_jenis_barang ?></td>
-                                    <td><?= $brg->nama_barang ?></td>
-                                    <td><?= format_rupiah($brg->harga) ?></td>
-                                    <td><?= $brg->stok ?></td>
-                                    <td colspan="2">
-                                        <a href="<?= site_url('barang/edit_barang/' . $brg->id_barang) ?>"
-                                            class="btn btn-sm btn-warning">Edit</a>
-                                        <a href="<?= site_url('barang/delete_barang/' . $brg->id_barang) ?>"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Anda yakin ingin menghapus data?');">Hapus</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal modal-blur fade" id="pilih_tanggal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Pilih Tanggal</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body ">
-                <?= form_open('barang/export_to_excel', ['id' => 'form_tanggal']) ?>
-                <div class="row mb-3 col-12">
-                    <div class="form-label col-5">Dari tanggal</div>
-                    <input type="date" class="form-control mb-3" name="tanggal_1" value="<?= set_value('tanggal_1') ?>">
-                    <small class="text-danger"><i><?= form_error('tanggal_1') ?></i></small>
-
-                    <div class="form-label col-5">Sampai tanggal</div>
-                    <input type="date" class="form-control" name="tanggal_2" value="<?= set_value('tanggal_2') ?>">
-                    <small class="text-danger"><i><?= form_error('tanggal_2') ?></i></small>
-                </div>
-                <?= form_close() ?>
             </div>
         </div>
     </div>
@@ -108,15 +65,69 @@
 
 
 <script>
-    $(document).ready(function() {
-        $('#form_tanggal').submit(function(e) {
-           e.preventDefault(); //biar gak reload
-           
-           $('.text-danger').html('');
+    $(document).ready(function () {
+        loadData();
 
-           $ajax({
+        function formatRupiah(angka) {
+            return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
 
-           });
+
+        function loadData() {
+            let keyword = $('#keyword').val()
+            $.ajax({
+                url: '<?= site_url('barang/get_barang') ?>',
+                method: 'POST',
+                data: {keyword : keyword, <?= $this->security->get_csrf_token_name()?> : "<?= $this->security->get_csrf_hash()?>"},
+                dataType: 'json',
+                success: function (data) {
+                    let baris = '';
+                    if (data.length == 0) {
+                        baris += `
+                        <tr>
+                            <td colspan=""2>Tidak ada data</td>    
+                        </tr>`;
+                    } else {
+                        data.forEach(function (item, index) {
+                            baris += `
+                                <tr>
+                                    <td>${index + 1}</td>    
+                                    <td>${item.nama_jenis_barang}</td>    
+                                    <td>${item.nama_barang}</td>    
+                                    <td>${formatRupiah(item.harga)}</td>    
+                                    <td>${item.stok}</td>
+                                    <td colspan="2">
+                                        <a href="<?= site_url('barang/edit_barang/')?>${item.id_barang}"
+                                            class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="<?= site_url('barang/delete_barang/')?>${item.id_barang}"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Anda yakin ingin menghapus data?');">Hapus</a>
+                                    </td>
+                                </tr>`;
+                        })
+                    }
+                    $('#table_barang tbody').html(baris);
+                },
+                error: function(error){
+                    console.error('Error : ', error);
+                }
+            });
+        }
+
+
+        $('#keyword').on('keyup', function(){
+            loadData();
+        })
+
+
+        $('#form_tanggal').submit(function (e) {
+            e.preventDefault(); //biar gak reload
+
+            $('.text-danger').html('');
+
+            $ajax({
+
+            });
         });
     });
 </script>

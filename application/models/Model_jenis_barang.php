@@ -8,8 +8,11 @@ class Model_jenis_barang extends CI_Model
         return $this->db->count_all('tb_jenis_barang');
     }
 
-    public function get_all_jenis_barang()
+    public function get_all_jenis_barang($keyword)
     {
+        if(!empty($keyword)){
+            $this->db->like('nama_jenis_barang', $keyword);
+        }
         return $this->db->get('tb_jenis_barang')->result();
     }
 

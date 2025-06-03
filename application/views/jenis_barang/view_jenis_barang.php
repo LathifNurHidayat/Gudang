@@ -30,6 +30,11 @@
         </div>
 
         <div class="card-body">
+            <div class="form-group">
+                <label class="p-2">Search</label>
+                <input type="text" name="keyword" id="keyword" class="form-control"
+                    placeholder="Masukan keyword">
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_jenis_barang">
                     <thead>
@@ -55,9 +60,11 @@
         LoadData();
 
         function LoadData() {
+            let keyword = $('#keyword').val();
             $.ajax({
                 url: '<?= site_url('barang/get_jenis_barang') ?>',
-                method: 'GET',
+                method: 'POST',
+                data: {keyword : keyword, <?= $this->security->get_csrf_token_name();?> : "<?= $this->security->get_csrf_hash()?>"},
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
@@ -65,7 +72,7 @@
                     if (data.length == 0) {
                         baris += `
                         <tr>
-                            <td colspan="3">Tidak ada data jenis barang</td>
+                            <td colspan="3" class="text-center">Tidak ada data</td>
                         </tr>`;
                     } else {
                         data.forEach(function (item, index) {
@@ -75,8 +82,7 @@
                             <td>${item.nama_jenis_barang}</td>
                             <td colspan="2">
                                 <a href="<?= site_url('barang/edit_jenis_barang/') ?>${item.id_jenis_barang}" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="<?= site_url('barang/delete_jenis_barang/') ?>${item.id_jenis_barang ?? ''}" 
-                                class="btn btn-danger btn-sm">Hapus</a>
+                                <a class="delete-btn btn btn-danger btn-sm" data-id="${item.id_jenis_barang}">Hapus</a>
                             </td>
                         </tr>`;
                         })
@@ -88,5 +94,34 @@
                 }
             });
         }
+
+
+        $(document).on('click', '.delete-btn', function () {
+            let id = $(this).data('id');
+            if (confirm('Apakah anda yakin ingin menghapus data ini?')) {
+                $.ajax({
+                    url: '<?= site_url('barang/delete_jenis_barang') ?>',
+                    method: 'POST',
+                    data: {
+                        id_jenis_barang: id,
+                        <?= $this->security->get_csrf_token_name() ?>: "<?= $this->security->get_csrf_hash() ?>"
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status === 'success') {
+                            location.reload();
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error : ', error);
+                    }
+                });
+            }
+        })
+
+
+        $('#keyword').on('keyup', function () {
+            LoadData();
+        });
     });
 </script>

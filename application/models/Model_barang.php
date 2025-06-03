@@ -8,8 +8,14 @@ class Model_barang extends CI_Model
         return $this->db->count_all('tb_barang');
     }
 
-    public function get_all_barang()
+    public function get_all_barang($keyword)
     {
+        if (!empty($keyword)){
+            $this->db->like('j.nama_jenis_barang', $keyword);
+            $this->db->or_like('b.nama_barang', $keyword);
+            $this->db->or_like('b.harga', $keyword);
+            $this->db->or_like('b.stok', $keyword);
+        }
         $this->db->select('b.*, j.nama_jenis_barang');
         $this->db->from('tb_barang b');
         $this->db->join('tb_jenis_barang j','b.id_jenis_barang = j.id_jenis_barang', 'LEFT');

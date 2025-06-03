@@ -11,7 +11,7 @@
     <div class="card">
         <?= $this->session->flashdata('msg'); ?>
 
-        <?= form_open('user/update_user', ['class' => 'm-3']); ?>
+        <?= form_open_multipart('user/update_user', ['class' => 'm-3']); ?>
 
         <input type="hidden" name="id_user" value="<?= $user->id_user?>">
 
@@ -30,13 +30,18 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label">Profile</label>
+            <input type="file" class="form-control" name="profile" accept=".jpg, .gif, .png"`
+                value="<?= set_value('profile', $user->profile) ?>">
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">Is Active</label>
-            <select name="is_active">
+            <select name="is_active" class="form-control">
                 <option value="aktif" <?= $user->is_active == 'aktif' ? 'selected' : '' ?>>Aktif</option>
                 <option value="nonaktif" <?= $user->is_active == 'nonaktif' ? 'selected' : '' ?>>Nonaktif</option>
             </select>
             <small class="text-danger"><i><?= form_error('is_active') ?></i></small>
-
         </div>
 
         <a href="<?= base_url('user/index') ?>" class="btn btn-warning">Kembali</a>
@@ -51,3 +56,10 @@
         <?= form_close(); ?>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function() {
+        
+    })
+</script>

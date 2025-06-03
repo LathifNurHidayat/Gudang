@@ -16,7 +16,7 @@ class Menu extends CI_Controller
 
     public function index()
     {
-        $data['menu'] = $this->model_menu->get_all_menu();
+        $data['menu'] = $this->model_menu->get_all_menu('');
 
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
@@ -25,7 +25,8 @@ class Menu extends CI_Controller
     }
 
     public function get_menu(){
-        $menu = $this->model_menu->get_all_menu();
+        $keyword = $this->input->post('keyword');
+        $menu = $this->model_menu->get_all_menu($keyword);
         echo json_encode($menu);
     }
 
@@ -114,13 +115,14 @@ class Menu extends CI_Controller
 
     public function get_submenu()
     {
-        $submenu = $this->model_submenu->get_all_submenu();
+        $keyword = $this->input->post('keyword');
+        $submenu = $this->model_submenu->get_all_submenu($keyword);
         echo json_encode($submenu);
     }
 
     public function add_submenu()
     {
-        $data['menu'] = $this->model_menu->get_all_menu();
+        $data['menu'] = $this->model_menu->get_all_menu('');
 
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
@@ -131,7 +133,7 @@ class Menu extends CI_Controller
     public function edit_submenu($id_submenu)
     {
         $data['submenu'] = $this->model_submenu->get_submenu_by_id($id_submenu);
-        $data['menu'] = $this->model_menu->get_all_menu();
+        $data['menu'] = $this->model_menu->get_all_menu('');
 
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
@@ -229,7 +231,8 @@ class Menu extends CI_Controller
     //ROLE
     public function get_role()
     {
-        $role = $this->model_role->get_all_role();
+        $keyword = $this->input->post('keyword');
+        $role = $this->model_role->get_all_role($keyword);
         echo json_encode($role);
 
     }
@@ -319,13 +322,8 @@ class Menu extends CI_Controller
     //USER ACCES MENU
     public function access_menu($id_role)
     {
-        $this->db->select('aa.*, bb.*');
-        $this->db->from('tb_user_access_menu aa');
-        $this->db->join('tb_user_menu bb', 'aa.id_menu = bb.id_menu', 'right');
-        $data['access_menu'] = $this->db->get()->result_array();
+        $data['menu'] = $this->db->get('tb_user_menu')->result_array();
         $data['id_role'] = $id_role;
-
-        // var_dump($data['access_menu']); die;
 
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");

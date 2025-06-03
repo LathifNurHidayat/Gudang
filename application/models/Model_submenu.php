@@ -3,8 +3,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Model_submenu extends CI_Model
 {
-    public function get_all_submenu()
+    public function get_all_submenu($keyword)
     {
+        if(!empty($keyword)){
+            $this->db->like('bb.menu', $keyword);
+            $this->db->or_like('aa.title', $keyword);
+            $this->db->or_like('aa.url', $keyword);
+            $this->db->or_like('aa.icon', $keyword);
+        }
+
         $this->db->select('aa.*, bb.menu');
         $this->db->from('tb_sub_menu aa');
         $this->db->join('tb_user_menu bb', 'aa.id_menu = bb.id_menu', 'Left');

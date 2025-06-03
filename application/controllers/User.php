@@ -15,12 +15,17 @@ class User extends CI_Controller
 
     public function index()
     {
-        $data['user'] = $this->model_user->get_all_user();
-
         $this->load->view("templates/header");
         $this->load->view("templates/sidebar");
-        $this->load->view("user/view_user", $data);
+        $this->load->view("user/view_user");
         $this->load->view("templates/footer");
+    }
+
+    public function get_user()
+    {
+        $keyword = $this->input->post('keyword');
+        $user = $this->model_user->get_all_user($keyword);
+        echo json_encode($user);
     }
 
     public function add_user()
@@ -87,11 +92,36 @@ class User extends CI_Controller
         }
 
         $id_user = $this->input->post('id_user', TRUE);
+        $file_name = 'Default.png';
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['max_size'] = 2048;
+        $this->load->library('upload', $config);
 
+        if (!$this->upload->do_upload('profile')) {
+            $error = $this->upload->display_errors();
+            $this->session->set_flashdata('msg', alert_error($error));
+            $data['user'] = $this->model_user->get_user_by_id($id_user);
+
+            $this->load->view('templates/header');
+            $this->load->view('templates/sidebar');
+            $this->load->view('user/edit_user', $data);
+            $this->load->view('templates/footer');
+            return;
+        }
+        $profile = $this->db->get_where('tb_user', ['id_user' => $id_user])->row_array();
+        $old_profile = $profile['profile'];
+        if ($old_profile && file_exists('./uploads/'.$old_profile) && $old_profile != 'Default.png'){
+            unlink('./uploads/'.$old_profile);
+        }
+
+        $file = $this->upload->data();
+        $file_name = $file['file_name'];
         $data = [
             'username' => $this->input->post('username', TRUE),
             'fullname' => $this->input->post('fullname', TRUE),
             'is_active' => $this->input->post('is_active', TRUE),
+            'profile' => $file_name
         ];
 
         $query_cek = $this->model_user->update_user($id_user, $data);
@@ -104,5 +134,5 @@ class User extends CI_Controller
     }
 
 
-    
+
 }

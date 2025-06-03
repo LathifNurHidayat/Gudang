@@ -3,8 +3,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Model_role extends CI_Model
 {
-    public function get_all_role()
+    public function get_all_role($keyword)
     {
+        if ($keyword != ''){
+            $this->db->like('role', $keyword);
+        }
         return $this->db->get('tb_user_role')->result();
     }
 

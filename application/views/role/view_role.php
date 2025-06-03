@@ -30,6 +30,12 @@
         </div>
 
         <div class="card-body">
+            <div class="form-group">
+                <label class="p-2">Search</label>
+                <input type="text" name="keyword" id="keyword" class="form-control mb-3 w-50"
+                    placeholder="Masukan keyword">
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_jenis_barang">
                     <thead>
@@ -49,24 +55,29 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         tampil_data();
 
-        function tampil_data(){
+        $(document).on('keyup', '#keyword', function () {
+            tampil_data();
+        })
+
+        function tampil_data() {
             $.ajax({
                 url: '<?= site_url('menu/get_role') ?>',
-                method: 'GET',
+                method: 'POST',
+                data: { keyword: $('#keyword').val(), <?= $this->security->get_csrf_token_name() ?>: "<?= $this->security->get_csrf_hash(); ?>" },
                 dataType: 'json',
-                success: function(data){
+                success: function (data) {
                     let baris = '';
-                    if(data.length === 0){
+                    if (data.length === 0) {
                         baris += `
                         <tr>
-                            <td colspan="3">Tidak ada data role</td>
+                            <td colspan="3" class="text-center  ">Data tidak ada</td>
                         </tr>`;
                     } else {
-                        data.forEach(function(item, i){
-                        baris += `
+                        data.forEach(function (item, i) {
+                            baris += `
                         <tr>
                             <td>${i + 1}</td>
                             <td>${item.role}</td>
@@ -79,10 +90,14 @@
                     }
                     $('#table_jenis_barang tbody').html(baris);
                 },
-                error: function(ex) {
+                error: function (ex) {
                     alert('Gagal mengambil data role');
                 }
             });
         };
+
+
+
+
     });
 </script>

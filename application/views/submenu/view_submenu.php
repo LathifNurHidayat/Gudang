@@ -30,8 +30,12 @@
         </div>
 
         <div class="card-body">
+            <div class="form-group mb-3 col-12 col-md-6 col-lg-4">
+                <label class="form-label">Search</label>
+                <input type="text" class="form-control" id="keyword" placeholder="Masukan keyword">
+            </div>
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_submenu">
+                <table class="table table-bordered table-striped " id="table_submenu">
                     <thead>
                         <tr>
                             <th>NO</th>
@@ -54,12 +58,14 @@
 
 <script>
     $(document).ready(function () {
-        tampil_data();
+        loadData();
 
-        function tampil_data() {
+        function loadData() {
+            let keyword = $('#keyword').val();
             $.ajax({
                 url: '<?= site_url('menu/get_submenu') ?>',
-                method: 'GET',
+                method: 'POST',
+                data: {keyword : keyword, <?= $this->security->get_csrf_token_name();?> : "<?= $this->security->get_csrf_hash()?>"},
                 dataType: 'json',
                 success: function (data){
                     let baris = '';
@@ -96,5 +102,10 @@
                 }
             })
         }
+
+
+        $('#keyword').on('keyup', function(){
+            loadData();
+        })
     });
 </script>

@@ -30,6 +30,10 @@
         </div>
 
         <div class="card-body">
+            <div class="form-group mb-3 cool-12 col-md-6 col-lg-5">
+                <label class="p-2">Search</label>
+                <input type="text" class="form-control" name="keyword" id="keyword" placeholder="Masukan keyword">
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-vcenter text-nowrap" id="table_menu">
                     <thead>
@@ -49,21 +53,22 @@
 </div>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         load_data();
 
         function load_data() {
+            let keyword = $('#keyword').val();
             $.ajax({
                 url: '<?= site_url('menu/get_menu') ?>',
-                method: 'GET',
+                method: 'POST',
+                data: {keyword : keyword, <?= $this->security->get_csrf_token_name();?> : "<?= $this->security->get_csrf_hash();?>"},
                 dataType: 'json',
                 success: function (data) {
-                    console.log('Data menu : ', data);
                     let baris = '';
                     if (data.length == 0) {
                         baris += `
                     <tr>
-                        <td colspan="3" class="text-center">Tidak ada data menu</td>
+                        <td colspan="3" class="text-center">Tidak ada data</td>
                     </tr>`;
                     } else {
                         data.forEach(function (item, index) {
@@ -86,7 +91,12 @@
                     </tr>`
                     )
                 }
-        });
+            });
         }
+
+
+        $('#keyword').on('keyup', function(){
+            load_data();
+        });
     })
 </script>

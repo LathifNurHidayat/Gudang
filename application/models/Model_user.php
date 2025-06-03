@@ -14,8 +14,12 @@ class Model_user extends CI_Model
         return $this->db->get('tb_user')->row();
     }
 
-    public function get_all_user()
+    public function get_all_user($keyword)
     {
+        if(!empty($keyword)){
+            $this->db->like('username', $keyword);
+            $this->db->or_like('fullname', $keyword);
+        }
         return $this->db->get('tb_user')->result();
     }
 
