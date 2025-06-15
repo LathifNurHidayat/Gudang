@@ -11,11 +11,9 @@ class Barang extends CI_Controller
         parent::__construct();
         middleware_login();
         middleware_access();
-
         $this->load->model("model_barang");
         $this->load->model("model_jenis_barang");
     }
-
 
     public function index()
     {
@@ -24,7 +22,6 @@ class Barang extends CI_Controller
         $this->load->view("barang/view_barang");
         $this->load->view("templates/footer");
     }
-
 
     public function get_barang()
     {
