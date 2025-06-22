@@ -1,6 +1,5 @@
 # 📦 Sistem Manajemen Gudang - CodeIgniter 3
 
-![Banner Sistem Gudang](https://via.placeholder.com/1000x200?text=Sistem+Manajemen+Gudang)
 
 > Aplikasi web untuk manajemen stok gudang yang simple, efisien, dan scalable. Dibangun dengan ❤️ menggunakan CodeIgniter 3.
 
@@ -47,28 +46,12 @@ Sistem ini dirancang untuk mempermudah pengelolaan barang di gudang secara digit
 1. Clone repositori ini:
    ```bash
    git clone https://github.com/LathifNurHidayat/Gudang.git
+   ```
+
+2. Masuk ke directori projek:
+   ```bash
    cd Gudang
    ```
-
-2. Import database dari file `.sql` yang disediakan ke MySQL Anda.
-
-3. Konfigurasi database di `application/config/database.php`.
-
-4. (Opsional) Atur base URL di `application/config/config.php`:
-   ```php
-   $config['base_url'] = 'http://localhost/Gudang/';
-   ```
-
-5. Jalankan di browser melalui `localhost/Gudang`.
-
----
-
-## 👤 Role Pengguna
-
-- **Admin**: Akses penuh, termasuk manajemen user & laporan
-- **Staff**: Hanya akses transaksi dan stok barang
-
----
 
 ## 📌 Catatan
 
