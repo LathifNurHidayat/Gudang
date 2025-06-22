@@ -17,7 +17,7 @@
 
 ## 🔍 Deskripsi Umum
 
-**Sistem Manajemen Gudang** adalah aplikasi web berbasis CodeIgniter 3 untuk mengelola stok barang, mencatat transaksi masuk/keluar, serta menghasilkan laporan stok secara otomatis.
+**Sistem Manajemen Gudang** adalah aplikasi web berbasis CodeIgniter 3 untuk mengelola stok barang dan mencatat transaksi masuk/keluar.
 
 ---
 
@@ -33,7 +33,6 @@
 
 ### ✨ Fitur Unggulan
 
-- Stok otomatis terupdate setiap transaksi
 - Interface responsif dengan Bootstrap
 - Validasi form dan keamanan XSS & CSRF
 - Role-based access control (RBAC)
